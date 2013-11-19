@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>Index</title>
@@ -5,6 +6,8 @@
 
 <body>
 <?php
+ini_set('display_errors',1); 
+ error_reporting(E_ALL);
 // Include the SDK using the Composer autoloader
 require 'vendor/autoload.php';
 
@@ -17,17 +20,18 @@ $aws = Aws::factory('/var/www/vendor/aws/aws-sdk-php/src/Aws/Common/Resources/cu
 $snsclient = $aws->get('Sns'); 
 $sqsclient = $aws->get('Sqs');
 
-$topicName="mp1jrhresize";
+$topicName="mp1srs";
 
 $snsresult = $snsclient->createTopic(array(
     // Name is required
     'Name' => $topicName,
 ));
 
+
 $topicArn = $snsresult['TopicArn'];
 
-#echo $topicArn ."\n";
-#echo $phone ."\n";
+//echo $topicArn ."\n";
+//echo $phone ."\n";
 
 $snsresult = $snsclient->setTopicAttributes(array(
     // TopicArn is required
@@ -36,6 +40,7 @@ $snsresult = $snsclient->setTopicAttributes(array(
     'AttributeName' => 'DisplayName',
     'AttributeValue' => 'aws544',
 ));
+
 
 $sqsresult = $sqsclient->createQueue(array('QueueName' => 'photo_q2',));
 $qurl=$sqsresult['QueueUrl'];
@@ -46,11 +51,10 @@ $qurl=$sqsresult['QueueUrl'];
   Email: <input type="text" name="email" > <br />
   Cell Number: <input type="text" name="phone" > <br />
  Choose Image: <input type="file" name="uploaded_file" id="uploaded_file"> <br />  
- <input type="hidden" name="topicArn" value="<? echo $topicArn ?>" >
-<input type="hidden" name="qurl" value="<? echo $qurl ?>" > 
+ <input type="hidden" name="topicArn" value="<?php echo $topicArn ?>" >
+<input type="hidden" name="qurl" value="<?php echo $qurl ?>" > 
  <input type="submit"  value="submit it!" >
 </form>
 </body>
 
 </html>
-

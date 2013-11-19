@@ -39,6 +39,7 @@ $qurl = $_POST["qurl"];
 #############################################
 #  Service Topic for subscription
 ##############################################
+
 try {
 $result = $snsclient->subscribe(array(
     // TopicArn is required
@@ -190,9 +191,7 @@ $_SESSION['queueurl']=$qurl;
 <body>
 Thank you <? echo $bucket ?>
 <script>
-//window.location = 'resize.php';
+window.location = 'resize.php';
 </script>
 </body>
-</html>
-
 </html>
