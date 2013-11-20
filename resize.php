@@ -1,5 +1,12 @@
 <!DOCTYPE html>
+<html>
+<head>
+<title>Resize PHP</title>
+</head>
 <?php
+ session_start();
+ini_set('display_errors',1); 
+ error_reporting(E_ALL);
 #retrieve these values that were set in process.php to make our code more flexible
 $queueURL = $_SESSION['queueurl'];
 $domain = $_SESSION['domain'];
@@ -25,6 +32,7 @@ $sqsclient = $aws->get('Sqs');
 
 $mbody="";
 
+print $queueURL;
 
 #####################################################
 # SQS Read the queue for some information -- we will consume the queue later
@@ -46,8 +54,7 @@ foreach ($result->getPath('Messages/*/Body') as $messageBody) {
 ##############################################
 # Select from SimpleDB element where id = the id in the Queue
 ##############################################
-#$exp = "select * from itm544jrh where id = '$mbody'";
-$exp = "select * from '$domain' where id = '$mbody'";
+$exp = "SELECT * FROM $domain WHERE id = '$mbody'";
 echo "\n".$exp."\n";
 
 try {
@@ -66,8 +73,7 @@ $finishedurl = '';
 $bucket = '';
 $id = '';
 $phone = '';
-$filename = '';
-$localfilename = ""; // this is a local variabel used to store the content of the s3 object
+$filename = ' ';
 ###################################################################
 # Now we are going to loop through the response object to get the 
 # values of the returned object
@@ -157,16 +163,20 @@ $sy = imagesy($stamp);
 imagecopy($im, $stamp, imagesx($im) - $sx - $marge_right, imagesy($im) - $sy - $marge_bottom, 0, 0, imagesx($stamp), imagesy($stamp));
 
 // Output and free memory
-header('Content-type: image/png');
-imagepng($im);
+
+imagepng($im, explode('.', $image)[0].'.png' );
 imagedestroy($im);
+
 
 } // end of function
 
+//send again to the bucket
+
+
 ?>
-<html>
-<head><title>Resize PHP</title></head>
 <body>
-<img src="/tmp/<? echo $filename ?>" />
+<script>
+//window.location = 'cleanup.php';
+</script>
 </body>
 </html>
