@@ -178,7 +178,6 @@ $result = $sqsclient->sendMessage(array(
     'QueueUrl' => $qurl,
     // MessageBody is required
     'MessageBody' => $UUID,
-    'DelaySeconds' => 15,
 ));
 
 $_SESSION['domain']=$domain;
