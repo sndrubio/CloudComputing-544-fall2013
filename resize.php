@@ -69,7 +69,7 @@ $iterator = $sdbclient->getIterator('Select', array(
 ####################################################################
 $email = '';
 $rawurl = '';
-$finishedurl = '';
+$finishedurl = ' ';
 $bucket = '';
 $id = '';
 $phone = '';
@@ -166,11 +166,32 @@ imagecopy($im, $stamp, imagesx($im) - $sx - $marge_right, imagesy($im) - $sy - $
 
 imagepng($im, explode('.', $image)[0].'.png' );
 imagedestroy($im);
-
-
 } // end of function
 
-//send again to the bucket
+
+
+//Send png to the bucket
+
+$imagepath = explode('.', $localfilename)[0].'.png' ;
+$result = $client->putObject(array(
+    'ACL'        => 'public-read',
+    'Bucket'     => $bucket,
+    'Key'        => basename($imagepath),
+    'SourceFile' => $imagepath,
+    'Metadata'   => array(
+        'timestamp' => time(),
+        'md5' =>  md5_file($imagepath),
+    )
+));
+print "#############################\n";
+var_export($result->getkeys());
+// this gets all the key value pairs and exports them as system variables making our lives nice so we don't have to do this manually. 
+
+$url= $result['ObjectURL'];
+
+echo $url;
+
+
 
 
 ?>
