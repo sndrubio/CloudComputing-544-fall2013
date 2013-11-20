@@ -32,7 +32,6 @@ $sqsclient = $aws->get('Sqs');
 
 $mbody="";
 
-print $queueURL;
 
 #####################################################
 # SQS Read the queue for some information -- we will consume the queue later
@@ -41,6 +40,7 @@ $result = $sqsclient->receiveMessage(array(
     // QueueUrl is required
     'QueueUrl' => $queueURL,
     'MaxNumberOfMessages' => 1, 
+	'WaitTimeSeconds' => 10,
 ));
 ######################################3
 # Probably need some logic in here to handle delays)
@@ -67,12 +67,12 @@ $iterator = $sdbclient->getIterator('Select', array(
 ####################################################################
 # Declare some variables as place holders for the select object
 ####################################################################
-$email = '';
-$rawurl = '';
+$email = ' ';
+$rawurl = ' ';
 $finishedurl = ' ';
-$bucket = '';
-$id = '';
-$phone = '';
+$bucket = ' ';
+$id = ' ';
+$phone = ' ';
 $filename = ' ';
 ###################################################################
 # Now we are going to loop through the response object to get the 
@@ -97,13 +97,13 @@ foreach ($iterator as $item) {
         echo "Bucket Value is: ". $attribute['Value']."\n";
         $bucket = $attribute['Value'];
         break;
-		 case "rawurl":
+   case "rawurl":
         echo "RawURL Value is: ". $attribute['Value']."\n";
         $rawurl = $attribute['Value'];
         break;
    case "finishedurl":
-        echo "Finished URL Value is: ". $attribute['Value']."\n";
-        $finishedurl = $attribute['Value'];
+        //echo "Finished URL Value is: ". $attribute['Value']."\n";
+        //$finishedurl = $attribute['Value'];
         break;
    case "filename":
         echo "Filename Value is: ". $attribute['Value']."\n";
@@ -135,6 +135,7 @@ $result = $client->getObject(array(
     'Key'    => $filename,
     'SaveAs' => $localfilename,
 ));
+
 ############################################################################
 #  Now that we have called the s3 object and downloaded (getObject) the file
 # to our local system - lets pass the file to our watermark library 
@@ -173,23 +174,19 @@ imagedestroy($im);
 //Send png to the bucket
 
 $imagepath = explode('.', $localfilename)[0].'.png' ;
+$aux = basename($imagepath);
+
 $result = $client->putObject(array(
-    'ACL'        => 'public-read',
-    'Bucket'     => $bucket,
-    'Key'        => basename($imagepath),
-    'SourceFile' => $imagepath,
-    'Metadata'   => array(
-        'timestamp' => time(),
-        'md5' =>  md5_file($imagepath),
+   'ACL'        => 'public-read',
+   'Bucket'     => $bucket,
+   'Key'        => $aux,
+   'SourceFile' => $imagepath,
+   'Metadata'   => array(
+       'timestamp' => time(),
+       'md5' =>  md5_file($imagepath),
     )
 ));
-print "#############################\n";
-var_export($result->getkeys());
-// this gets all the key value pairs and exports them as system variables making our lives nice so we don't have to do this manually. 
 
-$url= $result['ObjectURL'];
-
-echo $url;
 
 
 
