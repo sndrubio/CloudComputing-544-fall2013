@@ -187,7 +187,7 @@ $_SESSION['queueurl']=$qurl;
 ?>
 <html>
 <head>
-<title>Title of the document</title>
+<title>Process</title>
 </head>
 
 <body>
