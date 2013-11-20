@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <?php
 session_start();
+ini_set('display_errors',1); 
+ error_reporting(E_ALL);
 
 // Include the SDK using the Composer autoloader
 require 'vendor/autoload.php';
@@ -98,7 +100,7 @@ $url= $result['ObjectURL'];
 ##################################################
 # Set simpleDB Domain here - 
 #################################################
-$domain = "itm544jrh"; 
+$domain = "mp1srs"; 
 $result = $sdbclient->createDomain(array(
     // DomainName is required
     'DomainName' => $domain, 
@@ -134,7 +136,7 @@ $result = $sdbclient->putAttributes(array(
 	),
          array(
             'Name' => 'finishedurl',
-            'Value' => '',
+            'Value' => ' ',
         ),     
          array(
             'Name' => 'filename',
@@ -160,14 +162,14 @@ foreach ($result['Items'] as $item) {
 #####################################################
 # SNS publishing of message to topic - which will be sent via SMS
 #####################################################
-$result = $snsclient->publish(array(
-    'TopicArn' => $topicArn,
-    'TargetArn' => $topicArn,
+//$result = $snsclient->publish(array(
+   // 'TopicArn' => $topicArn,
+   // 'TargetArn' => $topicArn,
     // Message is required
-    'Message' => 'Your image has been uploaded',
-    'Subject' => $url,
-    'MessageStructure' => 'sms',
-));
+   // 'Message' => 'Your image has been uploaded',
+   // 'Subject' => $url,
+   // 'MessageStructure' => 'sms',
+//));
 #####################################################
 # Code to add a Message to a queue - queue has been precreated - its just easier
 #####################################################
@@ -189,7 +191,7 @@ $_SESSION['queueurl']=$qurl;
 </head>
 
 <body>
-Thank you <? echo $bucket ?>
+Thank you <?php echo $bucket ?>
 <script>
 window.location = 'resize.php';
 </script>
