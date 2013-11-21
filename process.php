@@ -3,7 +3,6 @@
 session_start();
 ini_set('display_errors',1); 
  error_reporting(E_ALL);
-
 // Include the SDK using the Composer autoloader
 require 'vendor/autoload.php';
 
@@ -11,6 +10,7 @@ use Aws\Sns\SnsClient;
 use Aws\Sns\Exception\InvalidParameterException;
 use Aws\Common\Aws;
 use Aws\Sqs\SqsClient;
+use Aws\Ses\SesClient;
 use Aws\SimpleDb\SimpleDbClient;
 
 // Instantiate the S3 client with your AWS credentials and desired AWS regionws\Common\Aws;
@@ -25,6 +25,8 @@ $sdbclient = $aws->get('SimpleDb');
 $snsclient = $aws->get('Sns'); 
 
 $sqsclient = $aws->get('Sqs');
+
+$sesclient = $aws->get('Ses');
 
 $UUID = uniqid();
 $email = str_replace("@","-",$_POST["email"]); 
@@ -94,6 +96,7 @@ var_export($result->getkeys());
 // this gets all the key value pairs and exports them as system variables making our lives nice so we don't have to do this manually. 
 
 $url= $result['ObjectURL'];
+
 ####################################################
 # SimpleDB create here - note no error checking
 ###################################################
@@ -162,14 +165,15 @@ foreach ($result['Items'] as $item) {
 #####################################################
 # SNS publishing of message to topic - which will be sent via SMS
 #####################################################
-//$result = $snsclient->publish(array(
-   // 'TopicArn' => $topicArn,
-   // 'TargetArn' => $topicArn,
+$result = $snsclient->publish(array(
+    'TopicArn' => $topicArn,
+    //'TargetArn' => $topicArn,
     // Message is required
-   // 'Message' => 'Your image has been uploaded',
-   // 'Subject' => $url,
-   // 'MessageStructure' => 'sms',
-//));
+    'Message' => 'Your image has been uploaded',
+    'Subject' => $url,
+    'MessageStructure' => 'sms',
+));
+
 #####################################################
 # Code to add a Message to a queue - queue has been precreated - its just easier
 #####################################################
@@ -179,6 +183,51 @@ $result = $sqsclient->sendMessage(array(
     // MessageBody is required
     'MessageBody' => $UUID,
 ));
+
+#####################################################
+# SES sending email - 1
+#####################################################
+
+//$body= '<b>Hello world</b>';
+//$plainTextBody = '';
+
+//$result = $sesclient->sendEmail(array(
+    //'AddTo' =>$_POST['email'],
+    //'SentFrom' =>'srubioso@hawk.iit.edu',
+	//'SetSubject' => 'testing!',
+	//'SetMessageFromString' =>($plainTextBody.$body),
+//));   
+
+
+#####################################################
+# SES sending email - 2
+#####################################################
+//$to      =$_POST["email"];
+//$subject = $url;
+//$message = 'Thanks for submit the image';
+//$headers = 'From: srubioso@hawk.iit.edu' . "\r\n" .
+			    	//'Reply-To: srubioso@hawk.iit.edu' . "\r\n" .
+                   // 'X-Mailer: PHP/' . phpversion();
+
+//mail($to, $subject, $message, $headers);
+
+#####################################################
+# SES sending email - 3
+#####################################################
+//require_once('ses.php');
+
+//$ses = new SimpleEmailService('Access Key Here', 'Secret Key Here');
+
+//$m = new SimpleEmailServiceMessage();
+//$m->addTo('recipient@example.com');
+//$m->setFrom('user@example.com');
+//$m->setSubject('Hello, world!');
+//$m->setMessageFromString('This is the message body.');
+
+//print_r($ses->sendEmail($m));
+
+
+
 
 $_SESSION['domain']=$domain;
 $_SESSION['queueurl']=$qurl;
