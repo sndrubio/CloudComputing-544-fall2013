@@ -171,7 +171,7 @@ imagedestroy($im);
 
 
 
-//Send png to the bucket
+//Send .png to the bucket
 
 $imagepath = explode('.', $localfilename)[0].'.png' ;
 $aux = basename($imagepath);
@@ -187,14 +187,18 @@ $result = $client->putObject(array(
     )
 ));
 
+$finishedurl= $result['ObjectURL'];
+echo $finishedurl;
 
-
+$_SESSION['domain']=$domain;
+$_SESSION['queueurl']=$qurl;
+$_SESSION['finishedurl'] = $finishedurl;
 
 
 ?>
 <body>
 <script>
-//window.location = 'cleanup.php';
+window.location = 'cleanup.php';
 </script>
 </body>
 </html>
