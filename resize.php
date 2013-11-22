@@ -10,6 +10,9 @@ ini_set('display_errors',1);
 #retrieve these values that were set in process.php to make our code more flexible
 $queueURL = $_SESSION['queueurl'];
 $domain = $_SESSION['domain'];
+$topicArn = $_SESSION['topicArn'];
+$url = $_SESSION['url'];
+$itemName = $_SESSION['itemname'];
 
 // Include the SDK using the Composer autoloader
 require 'vendor/autoload.php';
@@ -32,6 +35,8 @@ $sqsclient = $aws->get('Sqs');
 
 $mbody="";
 
+$rcptHandle= "";
+
 
 #####################################################
 # SQS Read the queue for some information -- we will consume the queue later
@@ -40,7 +45,7 @@ $result = $sqsclient->receiveMessage(array(
     // QueueUrl is required
     'QueueUrl' => $queueURL,
     'MaxNumberOfMessages' => 1, 
-	'WaitTimeSeconds' => 10,
+	'WaitTimeSeconds' => 15,
 ));
 ######################################3
 # Probably need some logic in here to handle delays)
@@ -49,6 +54,12 @@ foreach ($result->getPath('Messages/*/Body') as $messageBody) {
     // Do something with the message
     echo "SQS: " . $messageBody . "\n";
     $mbody=$messageBody;
+}
+
+foreach ($result->getPath('Messages/*/ReceiptHandle') as $aux) {
+    // Do something with the message
+    echo "ReceiptHandle: " . $aux . "\n";
+   $rcptHandle=$aux;
 }
 
 ##############################################
@@ -102,7 +113,7 @@ foreach ($iterator as $item) {
         $rawurl = $attribute['Value'];
         break;
    case "finishedurl":
-        //echo "Finished URL Value is: ". $attribute['Value']."\n";
+       // echo "Finished URL Value is: ". $attribute['Value']."\n";
         //$finishedurl = $attribute['Value'];
         break;
    case "filename":
@@ -187,13 +198,16 @@ $result = $client->putObject(array(
     )
 ));
 
-$finishedurl= $result['ObjectURL'];
-echo $finishedurl;
 
 $_SESSION['domain']=$domain;
-$_SESSION['queueurl']=$qurl;
+$_SESSION['queueurl']=$queueURL;
+$_SESSION['rcpthandle']=$rcptHandle;
 $_SESSION['finishedurl'] = $finishedurl;
-
+$_SESSION['topicArn'] =$topicArn;
+$_SESSION['bucket'] = $bucket;
+$_SESSION['file'] = $aux;
+$_SESSION['url'] = $url;
+$_SESSION['itemname'] = $itemName;
 
 ?>
 <body>
