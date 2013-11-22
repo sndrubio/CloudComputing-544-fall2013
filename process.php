@@ -165,14 +165,14 @@ foreach ($result['Items'] as $item) {
 #####################################################
 # SNS publishing of message to topic - which will be sent via SMS
 #####################################################
-$result = $snsclient->publish(array(
-    'TopicArn' => $topicArn,
+//$result = $snsclient->publish(array(
+    //'TopicArn' => $topicArn,
     //'TargetArn' => $topicArn,
     // Message is required
-    'Message' => 'Your image has been uploaded',
-    'Subject' => $url,
-    'MessageStructure' => 'sms',
-));
+   // 'Message' => 'Your image has been uploaded',
+   // 'Subject' => $url,
+   // 'MessageStructure' => 'sms',
+//));
 
 #####################################################
 # Code to add a Message to a queue - queue has been precreated - its just easier
@@ -185,52 +185,52 @@ $result = $sqsclient->sendMessage(array(
 ));
 
 #####################################################
-# SES sending email - 1
+# SES sending email 
 #####################################################
 
-//$body= '<b>Hello world</b>';
-//$plainTextBody = '';
 
-//$result = $sesclient->sendEmail(array(
-    //'AddTo' =>$_POST['email'],
-    //'SentFrom' =>'srubioso@hawk.iit.edu',
-	//'SetSubject' => 'testing!',
-	//'SetMessageFromString' =>($plainTextBody.$body),
-//));   
-
-
-#####################################################
-# SES sending email - 2
-#####################################################
-//$to      =$_POST["email"];
-//$subject = $url;
-//$message = 'Thanks for submit the image';
-//$headers = 'From: srubioso@hawk.iit.edu' . "\r\n" .
-			    	//'Reply-To: srubioso@hawk.iit.edu' . "\r\n" .
-                   // 'X-Mailer: PHP/' . phpversion();
-
-//mail($to, $subject, $message, $headers);
-
-#####################################################
-# SES sending email - 3
-#####################################################
-//require_once('ses.php');
-
-//$ses = new SimpleEmailService('Access Key Here', 'Secret Key Here');
-
-//$m = new SimpleEmailServiceMessage();
-//$m->addTo('recipient@example.com');
-//$m->setFrom('user@example.com');
-//$m->setSubject('Hello, world!');
-//$m->setMessageFromString('This is the message body.');
-
-//print_r($ses->sendEmail($m));
+$result = $sesclient->sendEmail(array(
+    // Source is required
+    'Source' => 'srubioso@hawk.iit.edu',
+    // Destination is required
+    'Destination' => array(
+        'ToAddresses' => array($_POST['email']),
+    ),
+    // Message is required
+    'Message' => array(
+        // Subject is required
+        'Subject' => array(
+            // Data is required
+            'Data' => basename($_FILES['uploaded_file']['name']),
+            //'Charset' => 'string',
+        ),
+        // Body is required
+        'Body' => array(
+            'Text' => array(
+                // Data is required
+                'Data' => 'Thanks for upload your image  '.$url,
+                //'Charset' => 'string',
+            ),
+            'Html' => array(
+                // Data is required
+                'Data' => 'Thanks for upload your image  '.$url,
+                //'Charset' => 'string',
+            ),
+        ),
+    ),
+    'ReplyToAddresses' => array('srubioso@hawk.iit.edu'),
+    //'ReturnPath' => 'string',
+));
 
 
 
 
+$_SESSION['url'] = $url;
 $_SESSION['domain']=$domain;
 $_SESSION['queueurl']=$qurl;
+$_SESSION['topicArn'] =$topicArn;
+$_SESSION['itemname'] = $itemName;
+
 
 ?>
 <html>
