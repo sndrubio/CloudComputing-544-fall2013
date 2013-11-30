@@ -5,6 +5,8 @@
 </head>
 <?php
  session_start();
+ error_reporting(E_ERROR | E_PARSE);
+
  
 $queueURL = $_SESSION['queueurl'];
 $rcptHandle = $_SESSION['rcpthandle'];
