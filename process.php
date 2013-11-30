@@ -109,6 +109,7 @@ $result = $sdbclient->createDomain(array(
     'DomainName' => $domain, 
 ));
 
+
 $result = $sdbclient->putAttributes(array(
     // DomainName is required
     'DomainName' => $domain,
