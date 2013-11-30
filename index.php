@@ -7,6 +7,7 @@
 <body>
 <?php
 session_start();
+session_destroy();
 // Include the SDK using the Composer autoloader
 require 'vendor/autoload.php';
 
