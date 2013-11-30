@@ -9,6 +9,10 @@ echo $ELBVAR
 #sleep 60 
 for i in {0..25}; do echo -ne '.'; sleep 1;done
 echo -e "\nFinished launching ELB and sleeping 60 seconds"
+aws elb create-lb-cookie-stickiness-policy --load-balancer-name mp1srs1 --policy-name browserSessionStickiness
+aws elb set-load-balancer-policies-of-listener --load-balancer-name mp1srs1 --load-balancer-port 80 --policy-names browserSessionStickiness
+
+
 #########################################################################
 #  This code configures the health check and how and what to load balance on
 ##########################################################################
