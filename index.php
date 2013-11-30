@@ -58,5 +58,4 @@ $qurl=$sqsresult['QueueUrl'];
  <input type="submit"  value="submit it!" >
 </form>
 </body>
-
 </html>
