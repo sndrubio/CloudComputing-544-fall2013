@@ -116,27 +116,6 @@ $result = $sqsclient->deleteMessage(array(
     'ReceiptHandle' => $rcptHandle,
 ));
 
-
-###################################################################
-# Update 'finishedurl'
-##################################################################
-
-
-$result = $sdbclient->putAttributes(array(
-    // DomainName is required
-    'DomainName' => $domain,
-   // ItemName is required
-    'ItemName' =>$itemName ,
-    // Attributes is required
-    'Attributes' => array(
-         array(
-            'Name' => 'finishedurl',
-            'Value' =>  $shortUrl,
-			'Replace' => true, 
-        ),     
-    ),
-));
-
  ?>
  
  
