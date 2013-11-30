@@ -5,8 +5,6 @@
 </head>
 <?php
  session_start();
-ini_set('display_errors',1); 
- error_reporting(E_ALL);
 #retrieve these values that were set in process.php to make our code more flexible
 $queueURL = $_SESSION['queueurl'];
 $domain = $_SESSION['domain'];
