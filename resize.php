@@ -199,6 +199,28 @@ $result = $client->putObject(array(
 ));
 
 
+
+###################################################################
+# Update 'finishedurl'
+##################################################################
+
+
+$result = $sdbclient->putAttributes(array(
+    // DomainName is required
+    'DomainName' => $domain,
+   // ItemName is required
+    'ItemName' =>$itemName ,
+    // Attributes is required
+    'Attributes' => array(
+         array(
+            'Name' => 'finishedurl',
+            'Value' =>  $url,
+			'Replace' => true, 
+        ),     
+    ),
+));
+
+
 $_SESSION['domain']=$domain;
 $_SESSION['queueurl']=$queueURL;
 $_SESSION['rcpthandle']=$rcptHandle;
