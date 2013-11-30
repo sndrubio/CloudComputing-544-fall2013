@@ -7,7 +7,6 @@
 <body>
 <?php
 session_start();
-session_destroy();
 ini_set('display_errors',1); 
  error_reporting(E_ALL);
 // Include the SDK using the Composer autoloader
